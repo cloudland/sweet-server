@@ -1,0 +1,43 @@
+plugins {
+//    id 'io.spring.dependency-management' version '1.1.0'
+}
+
+// 配置版本
+//group 'com.zeinex.sweet.schema'
+version '1.0.0-SNAPSHOT'
+
+//dependencyManagement {
+//    imports {
+//        mavenBom 'io.projectreactor:reactor-bom:2022.0.0-M2'
+//    }
+//}
+
+
+/**
+ * 依赖方式:
+ *  本地依赖:
+ *      implementation file('当前目录/xx.jar', ...)
+ *      or
+ *      implementation fileTree('dir':'目录', includes: ['*.jar'], excludes: [''])
+ *  项目依赖(必须在 settings.gradle 中 include 的项目):
+ *      implementation project(':projectName')
+ *  直接依赖:
+ *  依赖类型 依赖组名:依赖名称:依赖版本号
+ *      implementation group:'org.springframework.boot',name:'spring-boot-starter-web' version:'3.0.0'
+ *      or
+ *      implementation org.springframework.boot:spring-boot-starter-web:3.0.0
+ *
+ * 依赖类型:
+ *  compileOnly: 由java插件提供, 适用于编译期需要而不需要打包的情况
+ *  runtimeOnly: 由 java 插件提供, 只在运行期有效,编译时不需要
+ *  implementation: 由 java 插件提供, 在编译、运行时都有效
+ *  api: java-library 插件提供支持,这些依赖项可以传递性地导出给使用者，用于编译时和运行时
+ *  testCompileOnly: 由 java 插件提供,用于编译测试的依赖项，运行时不需要
+ *  testRuntimeOnly: 由 java 插件提供,只在测试运行时需要，而不是在测试编译时需要
+ *
+ */
+dependencies {
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+}

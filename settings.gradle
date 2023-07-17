@@ -1,0 +1,38 @@
+// 一个项目只能有一个 settings.gradle 文件
+pluginManagement {
+
+    repositories {
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+        maven { url 'https://maven.aliyun.com/repository/grails-core' } // 代理 https://repo.grails.org/grails/core
+
+        mavenCentral()
+        gradlePluginPortal()
+
+//        if (version.endsWith('-SNAPSHOT')) {
+//            maven { url "https://repo.spring.io/snapshot" }
+//        }
+
+    }
+
+//    resolutionStrategy {
+//        eachPlugin {
+//            if (requested.id.id == "org.jetbrains.kotlin.jvm") {
+//                useVersion "${kotlinVersion}"
+//            }
+//            if (requested.id.id == "org.jetbrains.kotlin.plugin.spring") {
+//                useVersion "${kotlinVersion}"
+//            }
+//        }
+//    }
+
+}
+
+//plugins {
+//    id "com.gradle.enterprise" version "3.12.2"
+//    id "io.spring.ge.conventions" version "0.0.13"
+//}
+
+rootProject.name = 'sweet-server'
+include ':sweet-schema'
+include ':sweet-bootstrap'
+

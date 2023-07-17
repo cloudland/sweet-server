@@ -1,0 +1,227 @@
+// 如果存在 buildscript 必须放在最前面
+buildscript {
+
+    repositories {
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+        maven { url 'https://maven.aliyun.com/repository/grails-core' } // 代理 https://repo.grails.org/grails/core
+
+        maven { url "https://plugins.gradle.org/m2/" }
+    }
+
+    dependencies {
+        /**
+         * 引入 spring-boot-gradle-plugin 不需要在分别单独引用插件的指定版本
+         * id 'org.springframework.boot' version '2.3.7.RELEASE'
+         * id 'io.spring.dependency-management' version '1.1.0'
+         * 全部由 spring-boot-gradle-plugin 提供版本
+         */
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:3.0.2"
+    }
+
+}
+
+version '1.0.0-SNAPSHOT'
+description = "Spring Boot Build"
+
+
+// 设置依赖
+//dependencies {
+//    implementation 'org.codehaus.groovy:groovy-all:3.0.5'
+//    implementation 'org.springframework:spring-context:5.3.+'
+//
+//    implementation 'org.springframework.boot:spring-boot-starter-web'
+//    implementation 'org.springframework.boot:spring-boot-starter-aop'
+//    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+//
+//}
+
+// 设置项目源集
+//sourceSets {
+//
+//}
+
+// 设置当前工程及子工程
+allprojects {
+
+    // 设置引用插件
+    apply plugin: 'base'
+    apply plugin: 'java'
+    apply plugin: 'java-library'
+
+    // 引用脚本
+//    apply from: ':env-profile:local.gradle'
+
+    // Java插件提供, 编译源码使用的Java版本
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    // Java插件提供, 生成Class使用的Java版本
+    targetCompatibility = JavaVersion.VERSION_1_8
+    // 编码字符集
+    compileJava.options.encoding = "UTF-8"
+    // 测试编码字符集
+    compileTestJava.options.encoding = "UTF-8"
+    // 编译java源码采用字符集
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+    }
+    // 编译java文档采用字符集
+    tasks.withType(Javadoc) {
+        options.encoding = "UTF-8"
+    }
+
+    // 分组设置
+    group "com.zeinex.sweet"
+
+    // 仓储设置
+    repositories {
+
+        // 私服快照及发布仓储
+//        if (version.contains('-')) {
+//            maven { url "http://proxy.mobile.cloudland.com:8081/nexus/repository/maven-releases/" }
+//        }
+//        if (version.endsWith('-SNAPSHOT')) {
+//            maven { url "http://proxy.mobile.cloudland.com:8081/nexus/repository/maven-snapshot/" }
+//        }
+
+        // 本地仓储
+        mavenLocal()
+
+        // 阿里仓储
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+//        maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+//        maven { url 'https://maven.aliyun.com/repository/grails-core' } // 代理 https://repo.grails.org/grails/core
+
+        // 中央仓储
+        mavenCentral()
+
+    }
+
+    // 构建脚本依赖仓储
+    buildscript {
+        repositories {
+            maven { url 'https://maven.aliyun.com/repository/public/' }
+        }
+    }
+
+    // 设置依赖
+//    dependencies {
+//        implementation 'org.projectlombok:lombok:1.18.18'
+//        implementation 'ch.qos.logback:logback-core:1.2.3'
+//        implementation 'ch.qos.logback:logback-classic:1.2.3'
+//
+////        implementation platform('org.springframework.boot:spring-boot-dependencies:2.3.9.RELEASE')
+//    }
+
+
+    configurations.all {
+
+        // 缓存的时效
+        resolutionStrategy.cacheChangingModulesFor 0, 'minutes'
+
+//        Configuration config -> {
+//            // 当遇到版本冲突时直接构建失败
+//            config.resolutionStrategy.failOnVersionConflict()
+//        }
+    }
+
+}
+
+// 设置所有子工程
+subprojects {
+
+    // 引用插件
+    // SpringBoot
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    // 依赖配置(通用依赖)
+    dependencies {
+        implementation 'org.projectlombok:lombok:1.18.18'
+        implementation 'ch.qos.logback:logback-core:1.2.3'
+        implementation 'ch.qos.logback:logback-classic:1.2.3'
+    }
+
+    // 依赖管理 依赖插件 io.spring.dependency-management
+    dependencyManagement {
+
+        // 依赖包
+        dependencies {
+            // 依赖 DSL 配置
+            dependency 'org.springframework:spring-core:5.3.0'
+            // 依赖集配置
+            dependencySet(group: 'ch.qos.logback', version: '1.2.3') {
+                entry 'logback-core'
+                entry 'logback-classic'
+            }
+
+//            dependency 'org.springframework.boot:spring-boot-starter-web'
+        }
+
+        // BOM 导入
+        imports {
+            mavenBom 'org.springframework.boot:spring-boot-dependencies:2.3.9.RELEASE'
+            mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Hoxton.SR9'
+//            mavenBom 'io.projectreactor:reactor-bom:2022.0.0-M2'
+        }
+
+    }
+
+}
+
+// 指定子工程设置
+//project('module-b') {
+//
+//    // 设置引用插件
+//    apply plugin: 'java'
+//
+//    // 设置依赖
+//    dependencies {
+//        implementation 'org.springframework:spring-core:5.3.0'
+//    }
+//
+//}
+
+// maven 发布
+//apply plugin: 'maven-publish'
+//
+//// 生成java源码和文档。依赖 java-library 插件
+//java {
+//    withSourcesJar()
+//    withJavadocJar()
+//}
+//
+//publishing {
+//
+//    publications {
+//
+//        studyGradle(MavenPublication) {
+//            from components.java // 发布 jar
+////            from components.web // 发布 war
+//
+//            group 'org.cloudland.study.gradle'
+//            artifactId 'study-gradle'
+//            version '1.0.0-SNAPSHOT'
+//
+//        }
+//
+//    }
+//
+//    // 发布的 maven 私服配置
+//    repositories {
+//
+//        maven {
+//            name = 'iNexus'
+//            // 发布地址
+//            url = 'http://proxy.mobile.cloudland.com:8081/nexus/repository/maven-releases/'
+//            // 认证配置
+//            credentials {
+//                name 'uploader01'
+//                password 'uploader01'
+//            }
+//
+//        }
+//
+//    }
+//
+//
+//}
+
