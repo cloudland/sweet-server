@@ -17,6 +17,7 @@ target/
 
 ### Gradle ###
 .gradle
+.gradletasknamecache
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/

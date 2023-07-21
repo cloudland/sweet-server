@@ -1,15 +1,7 @@
 plugins {
-//    id 'io.spring.dependency-management' version '1.1.0'
 }
 
 version '1.0.0-SNAPSHOT'
-
-//dependencyManagement {
-//    imports {
-//        mavenBom 'io.projectreactor:reactor-bom:2022.0.0-M2'
-//    }
-//}
-
 
 /**
  * 依赖方式:
@@ -41,10 +33,65 @@ dependencies {
     // add dependencies without a version number
 //    implementation 'io.projectreactor:reactor-core'
 
+
+
     // SpringBoot
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // SpringCloud
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+    // Alibaba
+//    implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery'
+    implementation 'com.alibaba:druid-spring-boot-starter'
+
+    // postgresql
+    implementation 'org.postgresql:postgresql'
+    implementation 'org.hibernate:hibernate-spatial:6.3.0.CR1'
 
     // 传递依赖: 引用模块
     api project(':sweet-schema')
 
+}
+
+// 编译 properties
+task replaceYamlVariables {
+    group "zeinex"
+
+    println "编译 === ${project.rootDir}"
+
+    doLast {
+        def properties = new Properties()
+        def propertiesFile = file("$project.rootDir/env-profile/local.properties") // 替换为实际的properties文件路径
+
+        // 加载properties文件
+        properties.load(propertiesFile.newDataInputStream())
+
+        def yamlFile = file("$project.projectDir/src/main/resources/application.yaml") // 替换为实际的application.yaml文件路径
+        def yamlContent = yamlFile.text
+
+        // 使用Groovy脚本替换yaml文件中的变量
+        properties.each { key, value ->
+            yamlContent = yamlContent.replaceAll("@${key}@", value)
+        }
+
+        // 写入替换后的内容到yaml文件
+        def compileYamlFile = file("$project.projectDir/build/resources/main/application.yaml")
+        // 替换为实际的application.yaml文件路径
+        compileYamlFile.write(yamlContent)
+    }
+}
+
+classes.dependsOn replaceYamlVariables
+
+// 启动类
+task runWithJavaExec(type: JavaExec) {
+    group "zeinex"
+    description = "Run the main class with JavaExecTask"
+    classpath sourceSets.main.runtimeClasspath
+    main 'com.zeinex.sweet.BootstrapServerApplication'
 }

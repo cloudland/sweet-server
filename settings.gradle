@@ -1,6 +1,7 @@
-// 一个项目只能有一个 settings.gradle 文件
+// 插件依赖管理
 pluginManagement {
 
+    // 下载 Gradle 插件的依赖仓库
     repositories {
         maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
         maven { url 'https://maven.aliyun.com/repository/grails-core' } // 代理 https://repo.grails.org/grails/core
@@ -14,17 +15,48 @@ pluginManagement {
 
     }
 
-//    resolutionStrategy {
-//        eachPlugin {
+    // 对下载依赖处理
+    resolutionStrategy {
+        eachPlugin {
+            println requested.id.id
+
 //            if (requested.id.id == "org.jetbrains.kotlin.jvm") {
 //                useVersion "${kotlinVersion}"
 //            }
-//            if (requested.id.id == "org.jetbrains.kotlin.plugin.spring") {
-//                useVersion "${kotlinVersion}"
+
+        }
+    }
+
+}
+
+// 依赖项解析管理
+dependencyResolutionManagement {
+    /**
+     * 设置存储库模式（原 allprojects 是没有这一项的）：
+     * PREFER_PROJECT：解析依赖库时, 优先使用本地仓库
+     * FAIL_ON_PROJECT_REPOS：解析依赖库时, 强行使用远程仓库
+     */
+//    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+
+    repositories {
+        // 本地仓储
+        mavenLocal()
+
+        // 私服仓储
+//        if (version.endsWith('-SNAPSHOT')) {
+//            maven {
+//                url "http://172.18.7.25:8081/nexus/repository/maven-snapshots/"
+//                allowInsecureProtocol true // 支持非 https
 //            }
 //        }
-//    }
+//        maven {
+//            url "http://172.18.7.25:8081/nexus/repository/maven-releases/"
+//            allowInsecureProtocol true // 支持非 https
+//        }
 
+        // 阿里仓储
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+    }
 }
 
 //plugins {
@@ -32,7 +64,9 @@ pluginManagement {
 //    id "io.spring.ge.conventions" version "0.0.13"
 //}
 
-rootProject.name = 'sweet-server'
+//rootProject.name = 'sweet-server'
 include ':sweet-schema'
 include ':sweet-bootstrap'
 
+// 用于指定项目路径
+//project(':sweet-schema').projectDir = new File(settingsDir, 'sweet-schema')
