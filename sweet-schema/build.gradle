@@ -1,17 +1,3 @@
-plugins {
-}
-
-// 配置版本
-//group 'com.zeinex.sweet.schema'
-version '1.0.1-SNAPSHOT'
-
-//dependencyManagement {
-//    imports {
-//        mavenBom 'io.projectreactor:reactor-bom:2022.0.0-M2'
-//    }
-//}
-
-
 /**
  * 依赖方式:
  *  本地依赖:
@@ -37,9 +23,16 @@ version '1.0.1-SNAPSHOT'
  */
 dependencies {
 
-//    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-aop'
-//    implementation 'org.springframework.boot:spring-boot-starter-web'
+    // 单元测试
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // 数据库驱动
+    implementation 'org.postgresql:postgresql'
+
+    // mybatis
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter'
+    implementation 'com.baomidou:mybatis-plus-boot-starter'
+
 
 }
 
