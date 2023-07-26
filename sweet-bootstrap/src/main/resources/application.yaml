@@ -1,0 +1,162 @@
+# ====== 服务配置 ======
+server:
+  port: 9993
+  tomcat:
+    uri-encoding: UTF-8
+  servlet:
+    # 访问路径
+    context-path: /sweet-server
+    # 字符编码
+    encoding:
+      force: true
+      charset: UTF-8
+      enabled: true
+
+# ====== 日志配置 ======
+logging:
+  level:
+    root: INFO
+    # 依赖 netflix 日志
+    com.netflix: ERROR
+    # JPA SQL 日志
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    # Spring 日志
+#    org.springframework.web: DEBUG
+    # 框架日志
+    com.gsafety.lemon: DEBUG
+
+  file:
+    name: logs/sweet-server.log
+
+# ====== 注册中心&配置中心 ======
+spring:
+  application:
+    name: sweet-server
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    driver-class-name: @datasource.jdbc.driver@
+    url: @datasource.db.url@
+    username: @datasource.db.username@
+    password: @datasource.db.password@
+
+    # Druid 数据源
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      # 下面为连接池的补充设置，应用到上面所有数据源中
+      # 初始化大小，最小，最大
+      initial-size: 9
+      min-idle: 9
+      max-active: 30
+      # 配置获取连接等待超时的时间
+      max-wait: 60000
+      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      time-between-eviction-runs-millis: 60000
+      # 配置一个连接在池中最小生存的时间，单位是毫秒
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 'x'
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      # 打开PSCache，并且指定每个连接上PSCache的大小
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      # 配置监控统计拦截的 Filter，去掉后监控界面 SQL 无法统计，wall 用于防火墙   日志 log4j
+      filters: stat,wall
+      use-global-data-source-stat: true
+      # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+      connect-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+      # druid 控制台
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/*
+        reset-enable: false
+        #设置监控页面的登录名和密码
+        login-username: admin
+        login-password: admin
+        allow: ""
+        deny: ""
+
+#  cloud:
+#    nacos:
+#      # 服务注册
+#      discovery:
+#        # 服務地址
+#        server-addr: @nacos.server.addr@
+#        # 命名空间
+#        namespace: @nacos.server.namespace@
+#        # 分组
+#        group: @nacos.server.group@
+#  jpa:
+#    database: postgresql
+##    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+#    # 配置在日志中打印出执行的 SQL 语句信息。
+#    show-sql: true
+#    # 配置指明在程序启动的时候要删除并且创建实体类对应的表。
+#    hibernate:
+#      ddl-auto: none #create #update
+#    properties:
+#      hibernate:
+#        jdbc:
+#          batch_size: 2000
+#          batch_versioned_data: true
+#        order_inserts: true
+#        order_updates: true
+
+
+# ====== OpenFeign 超时设置 配合 hystrix 使用。否会出现 1s 超时现象 ======
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 30000
+        readTimeout: 30000
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 30000
+
+# ====== Seata 分布式事务 ======
+#seata:
+#  enabled: true
+#  application-id: example-server
+#  tx-service-group: my_test_tx_group
+#  service:
+#    vgroup-mapping:
+#      tx-service-group: default
+#    enable-degrade: false
+#    disable-global-transaction: false
+#    grouplist:
+#      default: 127.0.0.1:8091
+#  registry:
+#    type: nacos
+#    nacos:
+#      server-addr: @seata.config.nacos.server.addr@
+#      namespace: @seata.config.nacos.server.namespace@
+#      group : @seata.config.nacos.server.group@
+#      cluster: default
+#  config:
+#    type: nacos
+#    nacos:
+#      server-addr: @seata.config.nacos.server.addr@
+#      namespace: @seata.config.nacos.server.namespace@
+#      group: @seata.config.nacos.server.group@
+
+# ====== Swagger配置 ======
+gsafety:
+  lemon:
+    swagger:
+      title: 业务定制系统
+      description: 该文档用于提供API接口的说明与测试使用，如有优化意见请与项目组联系。
+      version: 1.0.0-BETA
+      contact:
+        name: 盐城项目组
+        url: https://cloudland.github.io/
+        mail: zhuzhonglei@gsafety.com
+      security:
+        key: gsafety-token
+        title: 授权码

@@ -86,7 +86,7 @@ task replaceYamlVariables {
     }
 }
 
-classes.dependsOn replaceYamlVariables
+//classes.dependsOn replaceYamlVariables
 
 // 启动类
 task runWithJavaExec(type: JavaExec) {

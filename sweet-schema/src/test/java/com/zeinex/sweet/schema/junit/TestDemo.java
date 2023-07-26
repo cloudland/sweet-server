@@ -1,3 +1,5 @@
+package com.zeinex.sweet.schema.junit;
+
 import org.junit.Test;
 
 /**

@@ -16,7 +16,11 @@ buildscript {
          * 全部由 spring-boot-gradle-plugin 提供版本
          */
 //        classpath "org.springframework.boot:spring-boot-gradle-plugin:3.1.1"
+
+        // 版本管理, 在父工程申明, 子工程直接使用, 不用指定版本号
         classpath 'io.spring.gradle:dependency-management-plugin:1.1.2'
+
+        // lombok 插件引入, 解决标签不生效问题。不用在单独引用 Jar 包
         classpath 'io.freefair.gradle:lombok-plugin:8.1.0'
     }
 
@@ -114,9 +118,6 @@ subprojects {
                 entry 'logback-core'
                 entry 'logback-classic'
             }
-
-            // lombok
-            dependency 'org.projectlombok:lombok:1.18.22'
 
             // apache
             dependency 'org.apache.commons:commons-lang3:3.12.0'

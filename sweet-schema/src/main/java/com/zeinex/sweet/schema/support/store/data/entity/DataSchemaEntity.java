@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.zeinex.sweet.schema.support.store.AbstractBasicEntity;
 import lombok.Data;
+import lombok.ToString;
 import org.apache.ibatis.type.Alias;
 
 /**
@@ -16,6 +17,7 @@ import org.apache.ibatis.type.Alias;
 @TableName(value = "SWEET_DATA_SCHEMA", schema = "mew_chain")
 @Alias("Sweet.Schema.Store.DataSchemaEntity")
 @Data
+@ToString(callSuper = true)
 public class DataSchemaEntity extends AbstractBasicEntity {
 
     /**
